@@ -9,7 +9,6 @@
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -125,6 +124,7 @@ public class Teste {
   // ------------------------------------
   // main
   // ------------------------------------
+  @SuppressWarnings("unused")
   public static void main(String argv[]) throws Exception {
     // get video filename to request:
     if (argv.length >= 1) {

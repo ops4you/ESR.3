@@ -5,9 +5,9 @@
    colocar o cliente primeiro a correr que o servidor dispara logo!
    ---------------------- */
 
+
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -95,6 +95,7 @@ public class Cliente {
   // ------------------------------------
   // main
   // ------------------------------------
+  @SuppressWarnings("all")
   public static void main(String argv[]) throws Exception {
     Cliente t = new Cliente();
   }
