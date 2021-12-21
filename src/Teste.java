@@ -132,7 +132,7 @@ public class Teste {
       System.out.println("Teste: VideoFileName indicado como parametro: " + VideoFileName);
     } else {
       VideoFileName = "movie.Mjpeg";
-      System.out.println("Teste: parametro não foi indicado. VideoFileName = " + VideoFileName);
+      System.out.println("Teste: parametro nao foi indicado. VideoFileName = " + VideoFileName);
     }
 
     File f = new File(VideoFileName);
@@ -140,7 +140,7 @@ public class Teste {
       // Create a Main object
       Teste t = new Teste();
     } else
-      System.out.println("Ficheiro de video não existe: " + VideoFileName);
+      System.out.println("Ficheiro de video nao existe: " + VideoFileName);
   }
 
   // ------------------------------------

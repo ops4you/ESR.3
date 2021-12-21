@@ -24,7 +24,7 @@ public class Servidor extends JFrame implements ActionListener {
   DatagramSocket RTPsocket; // socket to be used to send and receive UDP packet
   int RTP_dest_port = 25000; // destination port for RTP packets
   InetAddress ClientIPAddr; // Client IP address
-
+  int clients[]; // should be the structure that countains the InetAdress and Port of all the clients
   static String VideoFileName; // video file to request to the server
 
   // Video constants:
@@ -91,7 +91,7 @@ public class Servidor extends JFrame implements ActionListener {
       System.out.println("Servidor: VideoFileName indicado como parametro: " + VideoFileName);
     } else {
       VideoFileName = "movie.Mjpeg";
-      System.out.println("Servidor: parametro não foi indicado. VideoFileName = " + VideoFileName);
+      System.out.println("Servidor: parametro nao foi indicado. VideoFileName = " + VideoFileName);
     }
 
     File f = new File(VideoFileName);
@@ -102,7 +102,7 @@ public class Servidor extends JFrame implements ActionListener {
       // s.pack();
       // s.setVisible(true);
     } else
-      System.out.println("Ficheiro de video não existe: " + VideoFileName);
+      System.out.println("Ficheiro de video nao existe: " + VideoFileName);
   }
 
   // ------------------------
@@ -130,6 +130,11 @@ public class Servidor extends JFrame implements ActionListener {
         rtp_packet.getpacket(packet_bits);
 
         // send the packet as a DatagramPacket over the UDP socket
+
+        //for(int i=0; i<clients.length ; i++){
+          //senddp = new DatagramPacket(packet_bits, packet_length, clients.getadr(i),clients.get RTP_dest_port);
+        //}
+          
         senddp = new DatagramPacket(packet_bits, packet_length, ClientIPAddr, RTP_dest_port);
         RTPsocket.send(senddp);
 

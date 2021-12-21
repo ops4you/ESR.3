@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-public class parser {
+public class Parser {
     public static int[][] parsegraph(String file) throws FileNotFoundException{
         int[][] matrix;
         File f = new File(file);
