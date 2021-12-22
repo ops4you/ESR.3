@@ -23,8 +23,8 @@ public class Servidor extends JFrame implements ActionListener {
   DatagramPacket senddp; // UDP packet containing the video frames (to send)A
   DatagramSocket RTPsocket; // socket to be used to send and receive UDP packet
   int RTP_dest_port = 25000; // destination port for RTP packets
-  InetAddress ClientIPAddr; // Client IP address
-  int clients[]; // should be the structure that countains the InetAdress and Port of all the clients
+  InetAddress ClientIPAddr; // Client IP address       TO REMOVE, unneeded after refactoring to "clients"
+  RouterInfo routers; // should be the structure that countains the InetAdress 
   static String VideoFileName; // video file to request to the server
 
   // Video constants:
@@ -50,6 +50,11 @@ public class Servidor extends JFrame implements ActionListener {
     sTimer.setInitialDelay(0);
     sTimer.setCoalesce(true);
     sBuf = new byte[15000]; // allocate memory for the sending buffer
+
+    //initializes the clientInfo class and feeds it to the network hander
+    this.routers =  new RouterInfo();
+    Thread nethandler = new Thread(new ServerNetworkHandler(this.routers));
+    nethandler.start();
 
     try {
       RTPsocket = new DatagramSocket(); // init RTP socket
@@ -131,11 +136,13 @@ public class Servidor extends JFrame implements ActionListener {
 
         // send the packet as a DatagramPacket over the UDP socket
 
-        //for(int i=0; i<clients.length ; i++){
-          //senddp = new DatagramPacket(packet_bits, packet_length, clients.getadr(i),clients.get RTP_dest_port);
-        //}
-          
         senddp = new DatagramPacket(packet_bits, packet_length, ClientIPAddr, RTP_dest_port);
+        
+        //for(InetAddress c : clients.getClients()){
+          //senddp = new DatagramPacket(packet_bits, packet_length, c, RTP_dest_port);
+        //}
+        // probably there should be an extra header to encapsulate the rtp packet wich is only sent to the final client, and all transactions inbetween are
+        // v shoul be replaced by ^ when everything is ready, this is the only change from the "base" server execp for the network handler 
         RTPsocket.send(senddp);
 
         System.out.println("Send frame #" + imagenb);

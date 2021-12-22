@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ClientInfo {
+public class RouterInfo {
     private List<InetAddress> adress;
     final Lock l = new ReentrantLock();
     
-    public ClientInfo(){
+    public RouterInfo(){
         adress = new ArrayList<InetAddress>();
     }
 
