@@ -4,12 +4,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-
-import javax.sound.sampled.Port;
 
 public class ServerNetworkHandler implements Runnable {
-    private int[][] matrix;
+    private int[][] matrix;// represents every possible network node  0= no conecttion; 1 means conection; 2 means should be conection but rn is dead
     private long[] contacts; //date in milisecconds since last contact
     private String[] ips; // ips for all routers
     private DatagramSocket socket;
@@ -52,7 +49,13 @@ public class ServerNetworkHandler implements Runnable {
 
         //call listen upd assync
         new Thread(() -> {
-            listenForUdp();
+            try {
+                listenForUdp();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                System.out.println("Error with the inner network socket");
+                e.printStackTrace();
+            }
         }).start();
        
         //checks if matrix needs updating
@@ -77,17 +80,31 @@ public class ServerNetworkHandler implements Runnable {
 
     }
 
-    void listenForUdp(){
+    void listenForUdp() throws Exception{
         //loop to w8 upd packets
         while(true){
             //w8 for packet
-
+            byte[] buf =  new byte[256];
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            socket.receive(packet);
+            String data = new String(packet.getData());
+            //if keepalive
+                // update the matrix to show that they are alive
+            if(data.contentEquals("ping")){
+                String ip =packet.getAddress().getHostAddress();
+                int i=0;
+                for (; i < ips.length; i++) {
+                    if(ips[i].contentEquals(ip)){
+                        contacts[i]=System.currentTimeMillis();
+                    }
+                }
+                updateAlive();
+            }
+            
             //if request  (both play and stop)
                 // update the client list
                 // recalculate paths
                 // update the routers on what they should do
-            //if keepalive
-                // update the matrix to show that they are alive
         }
     }
 
@@ -103,8 +120,9 @@ public class ServerNetworkHandler implements Runnable {
                     updateflag++;
                     int count =0;
                     for(int j=0 ; j<= matrix.length; j++){
-                        matrix[count][j]=0;
-                        matrix[j][count]=0;
+                        // if connection doewsnt exist its stays 0, if exists goes to 2 signaling that its not fucntional rn
+                        matrix[count][j]*=2;
+                        matrix[j][count]*=2;
                     }
                 count++;
                 }

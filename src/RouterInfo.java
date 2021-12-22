@@ -5,26 +5,26 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RouterInfo {
-    private List<InetAddress> adress;
+    private List<ClientInfo> clients;
     final Lock l = new ReentrantLock();
     
     public RouterInfo(){
-        adress = new ArrayList<InetAddress>();
+        clients = new ArrayList<ClientInfo>();
     }
 
-    public List<InetAddress> getClients(){
+    public List<ClientInfo> getClients(){
         l.lock();
         try {
-            return new ArrayList<>(adress);
+            return new ArrayList<>(clients);
         } finally {
             l.unlock();
         }
     }
 
-    public void addClient(InetAddress adr){
+    public void addClient(ClientInfo adr){
         l.lock();
         try {
-            adress.add(adr);  
+            clients.add(adr);  
         } finally{
             l.unlock();
         }
@@ -33,15 +33,15 @@ public class RouterInfo {
     public void rmClient(InetAddress adr){
         l.lock();
         try {
-            adress.remove(adr);  
+            clients.remove(adr);  
         } finally{
             l.unlock();
         }
     }
 
     public void rmAll(){
-        for (InetAddress inetAddress : adress) {
-            this.adress.remove(inetAddress);
+        for (ClientInfo inetAddress : this.clients) {
+            this.clients.remove(inetAddress);
         }
     }
 }
