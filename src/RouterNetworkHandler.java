@@ -1,13 +1,33 @@
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Collection;
 
 public class RouterNetworkHandler {
     RouterInfo adresses;
     int netport = 25001;// port for all netowrk comunications
+    private DatagramSocket socket;
+    DatagramPacket packet;
+    private boolean running;
+    private byte[] buf = new byte[256];
     
-    public RouterNetworkHandler(RouterInfo adr, int netport) {
+    
+    public RouterNetworkHandler(RouterInfo adr, int netport) throws SocketException {
         this.adresses =adr; 
         this.netport = netport;
+        this.socket = new DatagramSocket(netport);
+        packet = new DatagramPacket(buf, buf.length);
+
+        //poe o listen UPD a correr
+        new Thread(() -> {
+            listenUdp();
+        }).start();
+
+        //poe o keepAlive a correr
+        new Thread(() -> {
+            keepAlive();
+        }).start();
     }
 
     //listens for udp packages

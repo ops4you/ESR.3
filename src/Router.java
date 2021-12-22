@@ -1,19 +1,19 @@
 import java.net.InetAddress;
-import java.util.ArrayList;
+import java.net.SocketException;
 import java.util.Collection;
 
 public class Router {
     private RouterInfo adresses;
     private InetAddress serveradr;
-    private static int networkport = 25001;
+    private static int networkport = 25000;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //main server ip is arg1
 
         Router r = new Router();
     }
 
-    public Router(){
+    public Router() throws SocketException{
         // initiates network handler
         adresses = new RouterInfo();
         RouterNetworkHandler rnh = new RouterNetworkHandler(adresses,networkport);
