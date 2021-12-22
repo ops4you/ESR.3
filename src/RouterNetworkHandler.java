@@ -2,10 +2,10 @@ import java.net.InetAddress;
 import java.util.Collection;
 
 public class RouterNetworkHandler {
-    Collection<InetAddress> adresses;
+    RouterInfo adresses;
     int netport;// port for all netowrk comunications
     
-    public RouterNetworkHandler(Collection<InetAddress> adr, int netport) {
+    public RouterNetworkHandler(RouterInfo adr, int netport) {
         this.adresses =adr; 
         this.netport = netport;
     }
@@ -17,7 +17,7 @@ public class RouterNetworkHandler {
         // if server ping answer with smth 
 
         // if its an update to the adresses update adresses wi ththe new info ( the new info overrides all previous info so all prevuous adresses need to be erased)
-        // WARNING- the adresses collection needs to be the same because its shares with Routers, you need to erase all adresses and put the new ones. 
+        // WARNING- the adresses object needs to be the same because its shares with Routers, you need to erase all adresses and put the new ones. 
 
     }
 

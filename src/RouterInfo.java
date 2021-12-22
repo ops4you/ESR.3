@@ -38,4 +38,10 @@ public class RouterInfo {
             l.unlock();
         }
     }
+
+    public void rmAll(){
+        for (InetAddress inetAddress : adress) {
+            this.adress.remove(inetAddress);
+        }
+    }
 }

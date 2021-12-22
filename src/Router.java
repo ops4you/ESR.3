@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class Router {
-    private Collection<InetAddress> adresses;
+    private RouterInfo adresses;
     private InetAddress serveradr;
     private static int networkport = 25001;
 
@@ -15,7 +15,7 @@ public class Router {
 
     public Router(){
         // initiates network handler
-        adresses = new ArrayList<InetAddress>();
+        adresses = new RouterInfo();
         RouterNetworkHandler rnh = new RouterNetworkHandler(adresses,networkport);
 
         //listens for connections on port 25000 and relays them to every adress in the adresses collection, (foreach loop)
