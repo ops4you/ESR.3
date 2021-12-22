@@ -3,7 +3,7 @@ import java.util.Collection;
 
 public class RouterNetworkHandler {
     RouterInfo adresses;
-    int netport;// port for all netowrk comunications
+    int netport = 25001;// port for all netowrk comunications
     
     public RouterNetworkHandler(RouterInfo adr, int netport) {
         this.adresses =adr; 
