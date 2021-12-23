@@ -29,6 +29,7 @@ public class ServerNetworkHandler implements Runnable {
         try {
             matrix = Parser.parsegraph(filename);
             ips = Parser.parseips(filename);
+            this.contacts= new long[ips.length];
         } catch (FileNotFoundException e) {
             System.out.println("/src/network file does not exist");
             e.printStackTrace();

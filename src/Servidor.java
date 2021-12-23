@@ -95,7 +95,7 @@ public class Servidor extends JFrame implements ActionListener {
       VideoFileName = argv[0];
       System.out.println("Servidor: VideoFileName indicado como parametro: " + VideoFileName);
     } else {
-      VideoFileName = "movie.Mjpeg";
+      VideoFileName = "src/movie.Mjpeg";
       System.out.println("Servidor: parametro nao foi indicado. VideoFileName = " + VideoFileName);
     }
 

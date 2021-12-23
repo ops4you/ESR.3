@@ -14,6 +14,7 @@ public class RouterInfo {
     
     public RouterInfo(){
         clients = new ArrayList<ClientInfo>();
+        adresses = new HashSet<InetAddress>();
     }
 
     public int size(){
