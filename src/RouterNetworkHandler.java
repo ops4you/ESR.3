@@ -85,8 +85,10 @@ public class RouterNetworkHandler {
             buf2 = "ping:".getBytes();
             DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, this.server, netport);
             socket.send(newptk);
+            int time = 500 + ((int) (Math.random() * (500)) );
+            System.out.println("Sent a keep alive ping to main server, next one in:" + time);
 
-            Thread.sleep(1000 + ((int) Math.random() * (500)));
+            Thread.sleep(time);
         }
     }
 }

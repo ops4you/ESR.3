@@ -15,14 +15,17 @@ public class Router {
 
     public static void main(String[] args) throws Exception {
         //main server ip is arg1
-        new Router(args[1]);
+        String serverip;
+        //serverip = args[1];
+        serverip = "127.0.0.1";
+        new Router(serverip);
     }
 
     public Router(String server) throws Exception{
         // initiates network handler
         this.serveradr = InetAddress.getByName(server);
         adresses = new HashSet<InetAddress>();
-        new RouterNetworkHandler(adresses,networkport, serveradr);
+        new RouterNetworkHandler(adresses,underport, serveradr);
         buf = new byte[15000];// needs to be enough for a hole frame
         socket = new DatagramSocket(networkport);
         packet = new DatagramPacket(buf, buf.length);
