@@ -5,6 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.time.chrono.IsoEra;
 
 public class ServerNetworkHandler implements Runnable {
     private int[][] matrix;// represents every possible network node  0= no conecttion; 1 means conection; 2 means should be conection but rn is dead
@@ -102,11 +103,20 @@ public class ServerNetworkHandler implements Runnable {
                 }
                 updateAlive();
             }
+            else if(isRqst(packet)){
+                int router = 0 ; //value by default as to not give an error
+                for(int i=0; i< ips.length ; i++){
+                    if(packet.getAddress().equals( InetAddress.getByName(ips[i]) ) ) {
+                        router = i;
+                    }
+                }
+
+                ClientInfo c = new ClientInfo(packet.getAddress(), router);
+                clients.addClient(c);
+                updateAlive();
+            }
             
-            //if request  (both play and stop)
-                // update the client list
-                // recalculate paths
-                // update the routers on what they should do
+            
         }
     }
 
@@ -177,5 +187,22 @@ public class ServerNetworkHandler implements Runnable {
             }
             k++;
         }
+    }
+
+    public static byte[] truncate(byte[] array, int newLength) {
+        if (array.length < newLength) {
+            return array;
+        } else {
+            byte[] truncated = new byte[newLength];
+            System.arraycopy(array, 0, truncated, 0, newLength);
+
+            return truncated;
+        }
+    }
+
+    
+    public boolean isRqst(DatagramPacket pkt){
+        byte[] data = pkt.getData();
+        return (new String(truncate(data,5))).compareTo("rqst:")==0;
     }
 }
