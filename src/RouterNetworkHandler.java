@@ -5,6 +5,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 
+import javax.xml.crypto.Data;
+
 public class RouterNetworkHandler {
     Collection<InetAddress> adresses;
     int netport = 25001;// port for all netowrk comunications
@@ -12,11 +14,13 @@ public class RouterNetworkHandler {
     DatagramPacket packet;
     private boolean running;
     private byte[] buf = new byte[256];
+    InetAddress server;
     
     
-    public RouterNetworkHandler(Collection<InetAddress> adr, int netport) throws Exception {
+    public RouterNetworkHandler(Collection<InetAddress> adr, int netport, InetAddress serveradr) throws Exception {
         this.adresses = adr; 
         this.netport = netport;
+        server = serveradr;
         this.socket = new DatagramSocket(netport);
         packet = new DatagramPacket(buf, buf.length);
 
@@ -32,7 +36,12 @@ public class RouterNetworkHandler {
 
         //poe o keepAlive a correr
         new Thread(() -> {
-            keepAlive();
+            try {
+                keepAlive();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }).start();
     }
 
@@ -74,7 +83,15 @@ public class RouterNetworkHandler {
             return truncated;
         }
     }
-    public void keepAlive(){
+    public void keepAlive() throws Exception{
         //every 1s +- a random amount maybe 0.5s ping the main server with a keep alive msg to show that its still responding
+        while(true){
+            byte[] buf2 = new byte[256];
+            buf2 = "ping:".getBytes();
+            DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, this.server, netport);
+            socket.send(newptk);
+
+            Thread.sleep(1000 + ((int) Math.random() * (500)));
+        }
     }
 }

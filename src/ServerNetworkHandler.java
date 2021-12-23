@@ -95,7 +95,7 @@ public class ServerNetworkHandler implements Runnable {
             String data = new String(packet.getData());
             // if keepalive
             // update the matrix to show that they are alive
-            if (data.contentEquals("ping")) {
+            if (data.contentEquals("ping:")) {
                 String ip = packet.getAddress().getHostAddress();
                 int i = 0;
                 for (; i < ips.length; i++) {
@@ -160,7 +160,6 @@ public class ServerNetworkHandler implements Runnable {
                         updateflag++;
                         matrix[count][j] = 1;
                         matrix[j][count] = 1;
-
                     }
                 }
             }

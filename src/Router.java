@@ -26,7 +26,7 @@ public class Router {
     public Router() throws Exception{
         // initiates network handler
         adresses = new ArrayList<InetAddress>();
-        RouterNetworkHandler rnh = new RouterNetworkHandler(adresses,networkport);
+        RouterNetworkHandler rnh = new RouterNetworkHandler(adresses,networkport, serveradr);
         buf = new byte[15000];// needs to be enough for a hole frame
         socket = new DatagramSocket(networkport);
         packet = new DatagramPacket(buf, buf.length);
@@ -54,7 +54,7 @@ public class Router {
     //chest if its a clients wanting a request or just a packat to relay
     public boolean isRequest(DatagramPacket pkt){
         byte[] data = pkt.getData();
-        return (new String(truncate(data,5))).compareTo("rqst")==0;
+        return (new String(truncate(data,5))).compareTo("rqst:")==0;
     }
 
     public static byte[] truncate(byte[] array, int newLength) {

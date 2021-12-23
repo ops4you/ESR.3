@@ -39,10 +39,16 @@ public class Cliente {
   // --------------------------
   // Constructor
   // --------------------------
-  public Cliente() {
+  public Cliente(String routerIP) throws Exception {
 
     // build GUI
     // --------------------------
+    DatagramSocket socket = new DatagramSocket();
+    byte[] buf2 = new byte[256];
+    buf2 = "rqst:".getBytes();
+    DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, InetAddress.getByName(routerIP), RTP_RCV_PORT);
+    socket.send(newptk);
+
 
     // Frame
     f.addWindowListener(new WindowAdapter() {
@@ -97,7 +103,7 @@ public class Cliente {
   // ------------------------------------
   @SuppressWarnings("all")
   public static void main(String argv[]) throws Exception {
-    Cliente t = new Cliente();
+    Cliente t = new Cliente(argv[0]);
   }
 
   // ------------------------------------
