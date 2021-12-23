@@ -24,7 +24,7 @@ public class Servidor extends JFrame implements ActionListener {
   DatagramSocket RTPsocket; // socket to be used to send and receive UDP packet
   int RTP_dest_port = 25000; // destination port for RTP packets
   InetAddress ClientIPAddr; // Client IP address       TO REMOVE, unneeded after refactoring to "clients"
-  RouterInfo routers; // should be the structure that countains the InetAdress 
+  RouterInfo clients; // should be the structure that countains the InetAdress 
   static String VideoFileName; // video file to request to the server
 
   // Video constants:
@@ -52,8 +52,8 @@ public class Servidor extends JFrame implements ActionListener {
     sBuf = new byte[15000]; // allocate memory for the sending buffer
 
     //initializes the clientInfo class and feeds it to the network hander
-    this.routers =  new RouterInfo();
-    Thread nethandler = new Thread(new ServerNetworkHandler(this.routers));
+    this.clients =  new RouterInfo();
+    Thread nethandler = new Thread(new ServerNetworkHandler(this.clients));
     nethandler.start();
 
     try {
@@ -138,10 +138,11 @@ public class Servidor extends JFrame implements ActionListener {
 
         senddp = new DatagramPacket(packet_bits, packet_length, ClientIPAddr, RTP_dest_port);
         
-        //for(InetAddress c : clients.getClients()){
-          //senddp = new DatagramPacket(packet_bits, packet_length, c, RTP_dest_port);
-        //}
-        // probably there should be an extra header to encapsulate the rtp packet wich is only sent to the final client, and all transactions inbetween are
+        /*
+        for(InetAddress adrs : clients.getAdresses()){
+          senddp = new DatagramPacket(packet_bits, packet_length, adrs , RTP_dest_port);
+        }
+        */
         // v shoul be replaced by ^ when everything is ready, this is the only change from the "base" server execp for the network handler 
         RTPsocket.send(senddp);
 

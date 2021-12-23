@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class ServerNetworkHandler implements Runnable {
     private int[][] matrix;// represents every possible network node  0= no conecttion; 1 means conection; 2 means should be conection but rn is dead
@@ -14,7 +15,8 @@ public class ServerNetworkHandler implements Runnable {
     static String filename = "src/network.txt";
     static long maxdiff = 2000;
 
-    private RouterInfo clients;
+    private RouterInfo clients; //RouterInfo is a bad name, this stores all the Clients's info 
+
     // saves server statate
     // sends the new routing tables to the routers
     // updates the client list
@@ -62,8 +64,8 @@ public class ServerNetworkHandler implements Runnable {
         new Thread(() -> {
             try {
                 updateAlive();
-            } catch (InterruptedException e) {
-                System.out.println("sleep interrupted");
+            } catch (Exception e) {
+                System.out.println("idk what happened");
                 e.printStackTrace();
             }
         }).start();
@@ -108,7 +110,7 @@ public class ServerNetworkHandler implements Runnable {
         }
     }
 
-    void updateAlive() throws InterruptedException{
+    void updateAlive() throws Exception{
         //checks date matrix for routers that arent calling back and removes them rom curretn pool, 
         // if any are removed also updates matrix
         // if a router is offline, sends a ping to check if its up
@@ -141,7 +143,39 @@ public class ServerNetworkHandler implements Runnable {
     // sends each router theyr new "forwarding table" witch is a list of clients that they need to resend theyr packages too
     // b4 sending an ip to a router checks if ip is already eing sent, this is the way that we stop multiple packages in the same route.
     // also updates the "routerinfo" as to trully update the server's own routes (they shouls just be the 2nd node on all calculated routes (1st is the server, 2n is the next node))
-    void calcPath(){
-        
+    void calcPath() throws Exception{
+        int routs[][] = new int[clients.size()][];
+        int i=0;
+        for (ClientInfo c : clients.getClients()) {
+            routs[i] = Dijkstra.printPathInt(Dijkstra.dijkstra(matrix, 0, c.router));
+            i++;
+        }
+        int k=0;
+        //ressets the server's own forwarding adresses
+        clients.rmAllAdr();
+        for (int[] route : routs) {
+
+            //loop for each node in a specific route
+            for (int j = 0; j < route.length; j++) {
+                //send a packet saying "send ur stuff to the ip of the client corresponding to route[j+1]
+                
+                //j==0 so we need to update the servers own forwarding
+                if (j==0) {
+                    clients.addAdress(ips[1]);
+                }                
+                // ifi j=route.length-1 (last element in the route) insteds tells to send direcly to client
+                else if(j==route.length-1){
+                    byte[] buf = ("send:"+clients.getClients().get(k).adress).getBytes();
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName(ips[j]) ,netport);
+                    socket.send(packet);
+                }
+                else{
+                    byte[] buf = ("send:"+ips[j+1]).getBytes();
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName(ips[j]) ,netport);
+                    socket.send(packet);
+                }
+            }
+            k++;
+        }
     }
 }
