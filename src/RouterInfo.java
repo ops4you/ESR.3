@@ -1,5 +1,4 @@
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -42,6 +41,7 @@ public class RouterInfo {
     }
 
     //this may not work but we'll see
+    @SuppressWarnings("all")
     public void rmClient(InetAddress adr){
         l.lock();
         try {

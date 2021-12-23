@@ -4,8 +4,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.time.chrono.IsoEra;
 
 public class ServerNetworkHandler implements Runnable {
     private int[][] matrix;// represents every possible network node 0= no conecttion; 1 means conection; 2

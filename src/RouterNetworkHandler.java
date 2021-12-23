@@ -1,18 +1,13 @@
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Collection;
-
-import javax.xml.crypto.Data;
 
 public class RouterNetworkHandler {
     Collection<InetAddress> adresses;
     int netport = 25001;// port for all netowrk comunications
     private DatagramSocket socket;
     DatagramPacket packet;
-    private boolean running;
     private byte[] buf = new byte[256];
     InetAddress server;
     

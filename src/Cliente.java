@@ -39,8 +39,8 @@ public class Cliente {
   // --------------------------
   // Constructor
   // --------------------------
+  @SuppressWarnings("all")
   public Cliente(String routerIP) throws Exception {
-
     // build GUI
     // --------------------------
     DatagramSocket socket = new DatagramSocket();

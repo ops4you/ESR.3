@@ -1,12 +1,8 @@
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import javax.xml.crypto.Data;
 
 public class Router {
     private Collection<InetAddress> adresses;
@@ -18,13 +14,13 @@ public class Router {
 
     public static void main(String[] args) throws Exception {
         //main server ip is arg1
-        Router r = new Router();
+        new Router();
     }
 
     public Router() throws Exception{
         // initiates network handler
         adresses = new ArrayList<InetAddress>();
-        RouterNetworkHandler rnh = new RouterNetworkHandler(adresses,networkport, serveradr);
+        new RouterNetworkHandler(adresses,networkport, serveradr);
         buf = new byte[15000];// needs to be enough for a hole frame
         socket = new DatagramSocket(networkport);
         packet = new DatagramPacket(buf, buf.length);
