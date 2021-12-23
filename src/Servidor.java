@@ -138,14 +138,12 @@ public class Servidor extends JFrame implements ActionListener {
 
         senddp = new DatagramPacket(packet_bits, packet_length, ClientIPAddr, RTP_dest_port);
         
-        /*
+        
         for(InetAddress adrs : clients.getAdresses()){
-          senddp = new DatagramPacket(packet_bits, packet_length, adrs , RTP_dest_port);
+          senddp.setAddress(adrs);
+          RTPsocket.send(senddp);
         }
-        */
-        // v shoul be replaced by ^ when everything is ready, this is the only change from the "base" server execp for the network handler 
-        RTPsocket.send(senddp);
-
+        
         System.out.println("Send frame #" + imagenb);
         // print the header bitstream
         rtp_packet.printheader();
@@ -157,8 +155,14 @@ public class Servidor extends JFrame implements ActionListener {
         System.exit(0);
       }
     } else {
-      // if we have reached the end of the video file, stop the timer
-      sTimer.stop();
+      // if we have reached the end of the video file, start from the begining
+      try {
+        System.out.println("Reached the end of the video, starting over");
+        video = new VideoStream(VideoFileName);
+      } catch (Exception e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
     }
   }
 

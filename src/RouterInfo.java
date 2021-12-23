@@ -1,13 +1,16 @@
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RouterInfo {
     private List<ClientInfo> clients;
     final Lock l = new ReentrantLock();
-    List<InetAddress> adresses;
+    //by being a set naturaly repeated ips are not counted
+    Set<InetAddress> adresses;// adresses that the server needs to send theyr packets to
     
     public RouterInfo(){
         clients = new ArrayList<ClientInfo>();
@@ -57,10 +60,10 @@ public class RouterInfo {
         }
     }
 
-    public List<InetAddress> getAdresses(){
+    public Set<InetAddress> getAdresses(){
         l.lock();
         try {
-            return new ArrayList<>(adresses);
+            return new HashSet<>(adresses);
         } finally {
             l.unlock();
         }
@@ -94,7 +97,7 @@ public class RouterInfo {
     }
 
     public void rmAllAdr(){
-        this.adresses = new ArrayList<InetAddress>();
+        this.adresses = new HashSet<InetAddress>();
     }
 
     

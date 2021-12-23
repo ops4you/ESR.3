@@ -4,9 +4,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.Arrays;
 
 public class ServerNetworkHandler implements Runnable {
-    private int[][] matrix;// represents every possible network node 0= no conecttion; 1 means conection; 2
+    private int[][] matrix;// represents every possible network node 0= no conecttion; 1 means conection
+                           // [x][x] positions indicate if the node itself is ofline(0) or online(1)
                            // means should be conection but rn is dead
     private long[] contacts; // date in milisecconds since last contact
     private String[] ips; // ips for all routers
@@ -94,6 +96,7 @@ public class ServerNetworkHandler implements Runnable {
             // if keepalive
             // update the matrix to show that they are alive
             if (data.contentEquals("ping:")) {
+                System.out.print("got a ping!");
                 String ip = packet.getAddress().getHostAddress();
                 int i = 0;
                 for (; i < ips.length; i++) {
@@ -103,17 +106,20 @@ public class ServerNetworkHandler implements Runnable {
                 }
                 updateAlive();
             } else if (isRqst(packet)) {
+                System.out.print("got a request!");
                 int router = 0; // value by default as to not give an error
                 for (int i = 0; i < ips.length; i++) {
                     if (packet.getAddress().equals(InetAddress.getByName(ips[i]))) {
                         router = i;
                     }
                 }
-                InetAddress a = InetAddress.getByName((new String(packet.getData())).split("rqst:")[1]);
+                InetAddress a = InetAddress.getByName((new String(packet.getData())).split("rqst:")[1]);// loads the
+                                                                                                        // clients ip
                 ClientInfo c = new ClientInfo(a, router);
                 clients.addClient(c);
                 updateAlive();
             } else if (isStop(packet)) {
+                System.out.println("got a ping!");
                 InetAddress a = InetAddress.getByName((new String(packet.getData())).split("stop:")[1]);
                 clients.rmClient(a);
                 updateAlive();
@@ -135,35 +141,29 @@ public class ServerNetworkHandler implements Runnable {
         // if a router is offline, sends a ping to check if its up
         long rn = System.currentTimeMillis();
         int updateflag = 0;
-        int count = 0;
+        int count = 0;// basicly the "i" for the 1st for loop
         for (long l : this.contacts) {
+            // timing out
             if (rn - l >= maxdiff) {
-                for (int j = 0; j <= matrix.length; j++) {
-                    // if connection doewsnt exist its stays 0, if exists goes to 2 signaling that
-                    // its not fucntional rn
-                    if (matrix[count][j] == 1) {
-                        // only updates flag if it changes from 1 to 2
-                        updateflag++;
-                    }
-                    matrix[count][j] *= 2;
-                    matrix[j][count] *= 2;
+
+                if (matrix[count][count] == 1 && updateflag == 0) {
+                    // only updates flag if it changes from 1 to 2
+                    matrix[count][count] = 0;
+                    updateflag++;
+                    System.out.println("Timmed out the router " + count);
                 }
-            }
-            if (rn - l <= maxdiff) {
-                for (int j = 0; j <= matrix.length; j++) {
-                    // if connection doewsnt exist its stays 0, if exists goes to 2 signaling that
-                    // its not fucntional rn
-                    if (matrix[count][j] > 1) {
-                        // only updates flag if it changes from more than 1 to one
-                        updateflag++;
-                        matrix[count][j] = 1;
-                        matrix[j][count] = 1;
-                    }
+                // making available
+            } else if (rn - l < maxdiff) {
+                if (matrix[count][count] == 0) {
+                    // only updates flag if it changes from more than 1 to one
+                    updateflag++;
+                    matrix[count][count] = 1;
                 }
             }
             count++;
         }
         if (updateflag != 0) {
+            System.out.println("Paths have been updated!");
             calcPath();
         }
 
@@ -182,15 +182,17 @@ public class ServerNetworkHandler implements Runnable {
     void calcPath() throws Exception {
         int routs[][] = new int[clients.size()][];
         int i = 0;
+        int[][] m = prepMatrix(matrix);
         for (ClientInfo c : clients.getClients()) {
-            routs[i] = Dijkstra.printPathInt(Dijkstra.dijkstra(matrix, 0, c.router));
+            routs[i] = Dijkstra.printPathInt(Dijkstra.dijkstra(m, 0, c.router));
             i++;
         }
         int k = 0;
         // ressets the server's own forwarding adresses
         clients.rmAllAdr();
+        System.out.println("new paths calculated");
         for (int[] route : routs) {
-
+            System.out.println("now handling route nr " + i + ": " + Arrays.toString(route));
             // loop for each node in a specific route
             for (int j = 0; j < route.length; j++) {
                 // send a packet saying "send ur stuff to the ip of the client corresponding to
@@ -214,6 +216,61 @@ public class ServerNetworkHandler implements Runnable {
             }
             k++;
         }
+    }
+
+    public int[][] prepMatrix(int[][] matrix) {
+        int[][] m = matrix.clone();
+
+        for (int i = 0; i < m.length - 1; i++) {
+            // node is online
+            // checks if every self connection is good
+            if (m[i][i] == 1) {
+                // if the node is already online no need to do anything
+                /*
+                for (int j = i + 1; j < m.length; j++) {
+
+                    // if there is a connection to a node not online
+                    if (m[i][j] == 1 && m[j][j] == 0) {
+                        m[i][j]=0;//close connection
+                        for (int k = i + 1; k < m.length; k++) {
+                            m[i][k] = intor(m[j][k],m[i][k]);
+                            m[k][i] = intor(m[j][k],m[i][k]);
+                        }
+                    }
+                }
+                */
+            }
+
+            // node not online, need to fix future and back conections
+            else {
+                //for every connection back
+                for (int j = 0; j < i; j++) {
+                    //checks if connected
+                    if(m[i][j]!=0 && i!=j){
+                        //for ecery connection front
+                        for (int k = i+1; k< m.length; k++) {
+                            //checks if connected
+                            if(m[i][k]!=0){
+                                //makes the connection between node back and node front
+                                m[j][k]=1;
+                                m[k][j]=1;
+                            }
+                        }
+                        m[i][j]=0;
+                        m[j][i]=0;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < m.length; i++) {
+            //remove self connection because we cant have that for pathfinding purposes
+            m[i][i]=0;
+        }
+        return m;
+    }
+
+    public int intor(int a, int b){
+        return a!=0 && b!=0 ? 0 : 1;
     }
 
     public static byte[] truncate(byte[] array, int newLength) {
