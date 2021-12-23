@@ -18,9 +18,7 @@ public class Router {
 
     public static void main(String[] args) throws Exception {
         //main server ip is arg1
-        byte[] teste = "send:".getBytes();
-        System.out.println("send:123123".split("send:")[1]);
-        //Router r = new Router();
+        Router r = new Router();
     }
 
     public Router() throws Exception{
