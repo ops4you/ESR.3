@@ -14,7 +14,7 @@ public class ServerNetworkHandler implements Runnable {
     private String[] ips; // ips for all routers
     private DatagramSocket socket;
     private int netport = 25001;
-    static String filename = "src/network.txt";
+    static String filename = "network.txt";
     static long maxdiff = 2000;
 
     private RouterInfo clients; // RouterInfo is a bad name, this stores all the Clients's info

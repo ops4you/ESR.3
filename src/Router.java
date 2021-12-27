@@ -16,8 +16,7 @@ public class Router {
     public static void main(String[] args) throws Exception {
         //main server ip is arg1
         String serverip;
-        //serverip = args[1];
-        serverip = "10.0.12.10";
+        serverip = args[0];
         new Router(serverip);
     }
 
