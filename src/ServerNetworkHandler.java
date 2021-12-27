@@ -92,7 +92,7 @@ public class ServerNetworkHandler implements Runnable {
             // w8 for packet
             byte[] buf = new byte[256];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            System.out.println("Listening on: " + socket.getLocalPort() +" " + socket.getInetAddress().getHostAddress());
+            System.out.println("Listening on: " + socket.getLocalPort() );
             socket.receive(packet);
             String data = new String(packet.getData());
             // if keepalive

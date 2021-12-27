@@ -43,10 +43,11 @@ public class Cliente {
   public Cliente(String routerIP) throws Exception {
     // build GUI
     // --------------------------
-    DatagramSocket socket = new DatagramSocket();
+    DatagramSocket socket = new DatagramSocket(RTP_RCV_PORT);
     byte[] buf2 = new byte[256];
     buf2 = "rqst:".getBytes();
     DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, InetAddress.getByName(routerIP), RTP_RCV_PORT);
+    System.out.println("sending a request to:" + newptk.getAddress().getHostAddress() +" " + newptk.getPort());
     socket.send(newptk);
 
 

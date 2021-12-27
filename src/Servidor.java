@@ -58,7 +58,7 @@ public class Servidor extends JFrame implements ActionListener {
 
     try {
       RTPsocket = new DatagramSocket(); // init RTP socket
-      ClientIPAddr = InetAddress.getByName("127.0.0.1");
+      ClientIPAddr = InetAddress.getByName("127.0.0.1");  //irelevant code, shoulnt matter
       System.out.println("Servidor: socket " + ClientIPAddr);
       video = new VideoStream(VideoFileName); // init the VideoStream object:
       System.out.println("Servidor: vai enviar video da file " + VideoFileName);
@@ -95,7 +95,7 @@ public class Servidor extends JFrame implements ActionListener {
       VideoFileName = argv[0];
       System.out.println("Servidor: VideoFileName indicado como parametro: " + VideoFileName);
     } else {
-      VideoFileName = "src/movie.Mjpeg";
+      VideoFileName = "movie.Mjpeg";
       System.out.println("Servidor: parametro nao foi indicado. VideoFileName = " + VideoFileName);
     }
 
