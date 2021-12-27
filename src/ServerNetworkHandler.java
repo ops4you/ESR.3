@@ -127,6 +127,9 @@ public class ServerNetworkHandler implements Runnable {
                 clients.rmClient(a);
                 updateAlive();
             }
+            else {
+                System.out.println("got an unrecognizd packet\n"+ new String(packet.getData()));
+            }
         }
     }
 
