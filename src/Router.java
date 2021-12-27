@@ -17,7 +17,7 @@ public class Router {
         //main server ip is arg1
         String serverip;
         //serverip = args[1];
-        serverip = "127.0.0.1";
+        serverip = "10.0.12.10";
         new Router(serverip);
     }
 

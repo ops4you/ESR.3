@@ -1,6 +1,7 @@
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketPermission;
 import java.util.Collection;
 
 public class RouterNetworkHandler {
@@ -84,6 +85,7 @@ public class RouterNetworkHandler {
             byte[] buf2 = new byte[256];
             buf2 = "ping:".getBytes();
             DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, this.server, netport);
+            System.out.println("sending ping to:" + newptk.getPort() + " " + newptk.getAddress().getHostAddress());
             socket.send(newptk);
             int time = 500 + ((int) (Math.random() * (500)) );
             System.out.println("Sent a keep alive ping to main server, next one in:" + time);

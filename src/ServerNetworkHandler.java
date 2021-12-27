@@ -39,7 +39,7 @@ public class ServerNetworkHandler implements Runnable {
     public void run() {
         // do server stuff
         try {
-            socket = new DatagramSocket();
+            socket = new DatagramSocket(this.netport);
         } catch (SocketException e2) {
             // TODO Auto-generated catch block
             System.out.println("datagram socket creating failed");
@@ -92,6 +92,7 @@ public class ServerNetworkHandler implements Runnable {
             // w8 for packet
             byte[] buf = new byte[256];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            System.out.println("Listening on: " + socket.getLocalPort() +" " + socket.getInetAddress().getHostAddress());
             socket.receive(packet);
             String data = new String(packet.getData());
             // if keepalive
@@ -120,7 +121,7 @@ public class ServerNetworkHandler implements Runnable {
                 clients.addClient(c);
                 updateAlive();
             } else if (isStop(packet)) {
-                System.out.println("got a ping!");
+                System.out.println("got a Stop!");
                 InetAddress a = InetAddress.getByName((new String(packet.getData())).split("stop:")[1]);
                 clients.rmClient(a);
                 updateAlive();
