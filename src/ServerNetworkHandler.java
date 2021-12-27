@@ -27,6 +27,7 @@ public class ServerNetworkHandler implements Runnable {
         // "run". this is how there 2 thread "comunicate"
         this.clients = c;
         try {
+            System.out.println("networkhandler Initiated");
             matrix = Parser.parsegraph(filename);
             ips = Parser.parseips(filename);
             this.contacts= new long[ips.length];

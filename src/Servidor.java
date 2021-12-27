@@ -26,6 +26,7 @@ public class Servidor extends JFrame implements ActionListener {
   InetAddress ClientIPAddr; // Client IP address       TO REMOVE, unneeded after refactoring to "clients"
   RouterInfo clients; // should be the structure that countains the InetAdress 
   static String VideoFileName; // video file to request to the server
+  int showing = 1;
 
   // Video constants:
   // ------------------
@@ -116,7 +117,7 @@ public class Servidor extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
 
     // if the current image nb is less than the length of the video
-    if (imagenb < VIDEO_LENGTH) {
+    if (imagenb < VIDEO_LENGTH*showing) {
       // update current imagenb
       imagenb++;
 
@@ -144,7 +145,7 @@ public class Servidor extends JFrame implements ActionListener {
           RTPsocket.send(senddp);
         }
         if (imagenb%10==0) {
-          System.out.println("Send frame #" + imagenb);
+          System.out.println("Sent frame #" + imagenb);
           // print the header bitstream
           rtp_packet.printheader();
         }
@@ -160,6 +161,7 @@ public class Servidor extends JFrame implements ActionListener {
       try {
         System.out.println("Reached the end of the video, starting over");
         video = new VideoStream(VideoFileName);
+        showing++;
       } catch (Exception e1) {
         // TODO Auto-generated catch block
         e1.printStackTrace();

@@ -10,16 +10,15 @@ public class RouterNetworkHandler {
     DatagramPacket packet;
     private byte[] buf = new byte[256];
     InetAddress server;
-    
-    
+
     public RouterNetworkHandler(Collection<InetAddress> adr, int netport, InetAddress serveradr) throws Exception {
-        this.adresses = adr; 
+        this.adresses = adr;
         this.netport = netport;
         server = serveradr;
         this.socket = new DatagramSocket(netport);
         packet = new DatagramPacket(buf, buf.length);
 
-        //poe o listen UPD a correr
+        // poe o listen UPD a correr
         new Thread(() -> {
             try {
                 listenUdp();
@@ -29,7 +28,7 @@ public class RouterNetworkHandler {
             }
         }).start();
 
-        //poe o keepAlive a correr
+        // poe o keepAlive a correr
         new Thread(() -> {
             try {
                 keepAlive();
@@ -40,34 +39,41 @@ public class RouterNetworkHandler {
         }).start();
     }
 
-    //listens for udp packages
-    public void listenUdp() throws Exception{
+    // listens for udp packages
+    public void listenUdp() throws Exception {
         // listen for udp packets
-        
-        // if server ping answer with smth 
-        if(isNewIp(packet) ){
-            //gets the ip as a string
-            String ip =(new String(packet.getData())).split("send:")[1];
-            adresses.add( InetAddress.getByName(ip));
-        }
-        else if(isErase(packet)){
+        byte[] buf = new byte[256];
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        System.out.println("Listening on: " + socket.getLocalPort());
+        socket.receive(packet);
+        System.out.println("Received packet from:"+packet.getAddress().getHostName());
+        // if server ping answer with smth
+        if (isNewIp(packet)) {
+            // gets the ip as a string
+            String ip = (new String(packet.getData())).split("send:")[1];
+            adresses.add(InetAddress.getByName(ip));
+        } else if (isErase(packet)) {
             this.adresses.clear();
+        }else{
+            System.out.print("received a packet and dont know what it is");
         }
-        // if its an update to the adresses update adresses wi ththe new info ( the new info overrides all previous info so all prevuous adresses need to be erased)
-        // WARNING- the adresses object needs to be the same because its shares with Routers, you need to erase all adresses and put the new ones. 
+        // if its an update to the adresses update adresses wi ththe new info ( the new
+        // info overrides all previous info so all prevuous adresses need to be erased)
+        // WARNING- the adresses object needs to be the same because its shares with
+        // Routers, you need to erase all adresses and put the new ones.
 
     }
 
-    public boolean isNewIp(DatagramPacket pkt){
+    public boolean isNewIp(DatagramPacket pkt) {
         byte[] data = pkt.getData();
-        return (new String(truncate(data,5))).compareTo("send:")==0;
+        return (new String(truncate(data, 5))).compareTo("send:") == 0;
     }
 
-    public boolean isErase(DatagramPacket pkt){
+    public boolean isErase(DatagramPacket pkt) {
         byte[] data = pkt.getData();
-        return (new String(truncate(data,5))).compareTo("erase")==0;
+        return (new String(truncate(data, 5))).compareTo("erase") == 0;
     }
-    
+
     public static byte[] truncate(byte[] array, int newLength) {
         if (array.length < newLength) {
             return array;
@@ -78,15 +84,17 @@ public class RouterNetworkHandler {
             return truncated;
         }
     }
-    public void keepAlive() throws Exception{
-        //every 1s +- a random amount maybe 0.5s ping the main server with a keep alive msg to show that its still responding
-        while(true){
+
+    public void keepAlive() throws Exception {
+        // every 1s +- a random amount maybe 0.5s ping the main server with a keep alive
+        // msg to show that its still responding
+        while (true) {
             byte[] buf2 = new byte[256];
             buf2 = "ping:".getBytes();
             DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, this.server, netport);
             System.out.println("sending ping to:" + newptk.getPort() + " " + newptk.getAddress().getHostAddress());
             socket.send(newptk);
-            int time = 500 + ((int) (Math.random() * (500)) );
+            int time = 500 + ((int) (Math.random() * (500)));
             System.out.println("Sent a keep alive ping to main server, next one in:" + time);
 
             Thread.sleep(time);

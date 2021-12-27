@@ -7,7 +7,7 @@ import java.util.HashSet;
 public class Router {
     private Collection<InetAddress> adresses;
     private InetAddress serveradr;
-    private static int networkport = 25000;
+    private static int ottport = 25000;
     private static int underport = 25001;
     private DatagramSocket socket;
     private DatagramPacket packet;
@@ -27,7 +27,7 @@ public class Router {
         adresses = new HashSet<InetAddress>();
         new RouterNetworkHandler(adresses,underport, serveradr);
         buf = new byte[15000];// needs to be enough for a hole frame
-        socket = new DatagramSocket(networkport);
+        socket = new DatagramSocket(ottport);
         packet = new DatagramPacket(buf, buf.length);
         //listens for connections on port 25000 and relays them to every adress in the adresses collection, (foreach loop)
         socket.receive(packet);
@@ -45,7 +45,7 @@ public class Router {
             System.out.println("relay packet");
             for (InetAddress inetAddress : adresses) {
                 packet.setAddress(inetAddress);
-                packet.setPort(networkport);
+                packet.setPort(ottport);
                 socket.send(packet);
             }
         }
