@@ -30,7 +30,7 @@ public class ServerNetworkHandler implements Runnable {
             System.out.println("networkhandler Initiated");
             matrix = Parser.parsegraph(filename);
             ips = Parser.parseips(filename);
-            this.contacts= new long[ips.length];
+            this.contacts = new long[ips.length];
         } catch (FileNotFoundException e) {
             System.out.println("/src/network file does not exist");
             e.printStackTrace();
@@ -93,12 +93,11 @@ public class ServerNetworkHandler implements Runnable {
             // w8 for packet
             byte[] buf = new byte[256];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            System.out.println("Listening on: " + socket.getLocalPort() );
+            System.out.println("Listening on: " + socket.getLocalPort());
             socket.receive(packet);
-            String data = new String(packet.getData());
             // if keepalive
             // update the matrix to show that they are alive
-            if (data.contentEquals("ping:")) {
+            if (isPing(packet)) {
                 System.out.print("got a ping!");
                 String ip = packet.getAddress().getHostAddress();
                 int i = 0;
@@ -126,9 +125,8 @@ public class ServerNetworkHandler implements Runnable {
                 InetAddress a = InetAddress.getByName((new String(packet.getData())).split("stop:")[1]);
                 clients.rmClient(a);
                 updateAlive();
-            }
-            else {
-                System.out.println("got an unrecognizd packet\n"+ new String(packet.getData()));
+            } else {
+                System.out.println("got an unrecognizd packet\n" + new String(packet.getData()));
             }
         }
     }
@@ -233,50 +231,50 @@ public class ServerNetworkHandler implements Runnable {
             if (m[i][i] == 1) {
                 // if the node is already online no need to do anything
                 /*
-                for (int j = i + 1; j < m.length; j++) {
-
-                    // if there is a connection to a node not online
-                    if (m[i][j] == 1 && m[j][j] == 0) {
-                        m[i][j]=0;//close connection
-                        for (int k = i + 1; k < m.length; k++) {
-                            m[i][k] = intor(m[j][k],m[i][k]);
-                            m[k][i] = intor(m[j][k],m[i][k]);
-                        }
-                    }
-                }
-                */
+                 * for (int j = i + 1; j < m.length; j++) {
+                 * 
+                 * // if there is a connection to a node not online
+                 * if (m[i][j] == 1 && m[j][j] == 0) {
+                 * m[i][j]=0;//close connection
+                 * for (int k = i + 1; k < m.length; k++) {
+                 * m[i][k] = intor(m[j][k],m[i][k]);
+                 * m[k][i] = intor(m[j][k],m[i][k]);
+                 * }
+                 * }
+                 * }
+                 */
             }
 
             // node not online, need to fix future and back conections
             else {
-                //for every connection back
+                // for every connection back
                 for (int j = 0; j < i; j++) {
-                    //checks if connected
-                    if(m[i][j]!=0 && i!=j){
-                        //for ecery connection front
-                        for (int k = i+1; k< m.length; k++) {
-                            //checks if connected
-                            if(m[i][k]!=0){
-                                //makes the connection between node back and node front
-                                m[j][k]=1;
-                                m[k][j]=1;
+                    // checks if connected
+                    if (m[i][j] != 0 && i != j) {
+                        // for ecery connection front
+                        for (int k = i + 1; k < m.length; k++) {
+                            // checks if connected
+                            if (m[i][k] != 0) {
+                                // makes the connection between node back and node front
+                                m[j][k] = 1;
+                                m[k][j] = 1;
                             }
                         }
-                        m[i][j]=0;
-                        m[j][i]=0;
+                        m[i][j] = 0;
+                        m[j][i] = 0;
                     }
                 }
             }
         }
         for (int i = 0; i < m.length; i++) {
-            //remove self connection because we cant have that for pathfinding purposes
-            m[i][i]=0;
+            // remove self connection because we cant have that for pathfinding purposes
+            m[i][i] = 0;
         }
         return m;
     }
 
-    public int intor(int a, int b){
-        return a!=0 && b!=0 ? 0 : 1;
+    public int intor(int a, int b) {
+        return a != 0 && b != 0 ? 0 : 1;
     }
 
     public static byte[] truncate(byte[] array, int newLength) {
@@ -298,5 +296,10 @@ public class ServerNetworkHandler implements Runnable {
     public boolean isStop(DatagramPacket pkt) {
         byte[] data = pkt.getData();
         return (new String(truncate(data, 5))).compareTo("stop:") == 0;
+    }
+
+    public boolean isPing(DatagramPacket pkt) {
+        byte[] data = pkt.getData();
+        return (new String(truncate(data, 5))).compareTo("ping:") == 0;
     }
 }
