@@ -43,12 +43,12 @@ public class Cliente {
   public Cliente(String routerIP) throws Exception {
     // build GUI
     // --------------------------
-    DatagramSocket socket = new DatagramSocket(RTP_RCV_PORT);
+    RTPsocket = new DatagramSocket(RTP_RCV_PORT);
     byte[] buf2 = new byte[256];
     buf2 = "rqst:".getBytes();
     DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, InetAddress.getByName(routerIP), RTP_RCV_PORT);
     System.out.println("sending a request to:" + newptk.getAddress().getHostAddress() +" " + newptk.getPort());
-    socket.send(newptk);
+    RTPsocket.send(newptk);
 
 
     // Frame
@@ -92,7 +92,7 @@ public class Cliente {
 
     try {
       // socket e video
-      RTPsocket = new DatagramSocket(RTP_RCV_PORT); // init RTP socket (o mesmo para o cliente e servidor)
+      //RTPsocket = new DatagramSocket(RTP_RCV_PORT); // init RTP socket (o mesmo para o cliente e servidor) socket ja foi criada
       RTPsocket.setSoTimeout(5000); // setimeout to 5s
     } catch (SocketException e) {
       System.out.println("Cliente: erro no socket: " + e.getMessage());
