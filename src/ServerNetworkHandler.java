@@ -100,7 +100,7 @@ public class ServerNetworkHandler implements Runnable {
             if (isPing(packet)) {
                 System.out.println("got a ping!");
                 String ip = packet.getAddress().getHostAddress();
-                int i = 0;
+                int i = 1;
                 for (; i < ips.length; i++) {
                     if (ips[i].contentEquals(ip)) {
                         contacts[i] = System.currentTimeMillis();
@@ -152,7 +152,7 @@ public class ServerNetworkHandler implements Runnable {
         for (count = 1 ; count <this.contacts.length ; count++){
             long l = this.contacts[count];
             //timing ou
-            System.out.print("rn:" + rn +" l: " +l);
+            System.out.println("rn:" + rn +" l: " +l + "result"+ (rn-l));
 
             if (rn - l >= maxdiff) {
 
