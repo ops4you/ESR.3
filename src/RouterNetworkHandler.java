@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -18,6 +19,22 @@ public class RouterNetworkHandler {
         this.socket = new DatagramSocket(netport);
         packet = new DatagramPacket(buf, buf.length);
 
+        // thingy to shutdown safely
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                byte[] buf2 = new byte[256];
+                buf2 = "stop:".getBytes();
+                DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, server,netport);
+                try {
+                    socket.send(newptk);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        });
         // poe o listen UPD a correr
         new Thread(() -> {
             try {
@@ -46,7 +63,7 @@ public class RouterNetworkHandler {
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         System.out.println("Listening on: " + socket.getLocalPort());
         socket.receive(packet);
-        System.out.println("Received packet from:"+packet.getAddress().getHostName());
+        System.out.println("Received packet from:" + packet.getAddress().getHostName());
         // if server ping answer with smth
         if (isNewIp(packet)) {
             // gets the ip as a string
@@ -54,7 +71,7 @@ public class RouterNetworkHandler {
             adresses.add(InetAddress.getByName(ip));
         } else if (isErase(packet)) {
             this.adresses.clear();
-        }else{
+        } else {
             System.out.print("received a packet and dont know what it is");
         }
         // if its an update to the adresses update adresses wi ththe new info ( the new
@@ -92,10 +109,12 @@ public class RouterNetworkHandler {
             byte[] buf2 = new byte[256];
             buf2 = "ping:".getBytes();
             DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, this.server, netport);
-            //System.out.println("sending ping to:" + newptk.getPort() + " " + newptk.getAddress().getHostAddress());
+            // System.out.println("sending ping to:" + newptk.getPort() + " " +
+            // newptk.getAddress().getHostAddress());
             socket.send(newptk);
             int time = 500 + ((int) (Math.random() * (500)));
-            //System.out.println("Sent a keep alive ping to main server, next one in:" + time);
+            // System.out.println("Sent a keep alive ping to main server, next one in:" +
+            // time);
 
             Thread.sleep(time);
         }
