@@ -120,7 +120,7 @@ public class ServerNetworkHandler implements Runnable {
                                                                                                         // clients ip
                 ClientInfo c = new ClientInfo(a, router);
                 clients.addClient(c);
-                if(updateAlive())
+                if(!updateAlive())
                     {calcPath();}
             } else if (isStop(packet)) {
                 System.out.println("got a Stop!");
