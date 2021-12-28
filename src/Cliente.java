@@ -48,7 +48,22 @@ public class Cliente {
     DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, InetAddress.getByName(routerIP), RTP_RCV_PORT);
     System.out.println("sending a request to:" + newptk.getAddress().getHostAddress() + " " + newptk.getPort());
     RTPsocket.send(newptk);
+    // thingy to shutdown safely
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        byte[] buf2 = new byte[256];
+        buf2 = "stop:".getBytes();
+        DatagramPacket newptk = new DatagramPacket(buf2, buf2.length);
+        try {
+          RTPsocket.send(newptk);
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
 
+      }
+    });
     // Frame
     f.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {

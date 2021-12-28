@@ -42,6 +42,9 @@ public class Router {
                 DatagramPacket newptk = new DatagramPacket(buf2, buf2.length, serveradr, underport);
                 socket.send(newptk);
             }
+            if (isStop(packet)){
+                // send server msg to say that the client is no longer listening
+            }
             // this means its just a package to relay
             else {
                 System.out.println("relay packet");
@@ -60,7 +63,11 @@ public class Router {
         byte[] data = pkt.getData();
         return (new String(truncate(data, 5))).compareTo("rqst:") == 0;
     }
-
+    
+    public boolean isStop(DatagramPacket pkt) {
+        byte[] data = pkt.getData();
+        return (new String(truncate(data, 5))).compareTo("stop:") == 0;
+    }
     public static byte[] truncate(byte[] array, int newLength) {
         if (array.length < newLength) {
             return array;
