@@ -173,7 +173,7 @@ public class ServerNetworkHandler implements Runnable {
             }
         }
         if (updateflag != 0) {
-            //calcPath();
+            calcPath();
         }
 
     }
@@ -228,7 +228,12 @@ public class ServerNetworkHandler implements Runnable {
     }
 
     public int[][] prepMatrix(int[][] matrix) {
-        int[][] m = matrix.clone();
+        int[][] m = new int[matrix.length][matrix.length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+               m[i][j]=matrix[i][j];
+            }
+        }        
 
         for (int i = 0; i < m.length - 1; i++) {
             // node is online
