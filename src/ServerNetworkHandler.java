@@ -146,12 +146,14 @@ public class ServerNetworkHandler implements Runnable {
         long rn = System.currentTimeMillis();
         int updateflag = 0;
         int count = 0;// basicly the "i" for the 1st for loop
-        System.out.println("contacts matrix" +this.contacts);
         //for (long l : this.contacts) {
+        System.out.println("matrix:");
+        printMatrix(matrix);
         for (count = 1 ; count <this.contacts.length ; count++){
             long l = this.contacts[count];
             //timing ou
             System.out.print("rn:" + rn +" l: " +l);
+
             if (rn - l >= maxdiff) {
 
                 if (matrix[count][count] == 1) {
@@ -304,5 +306,14 @@ public class ServerNetworkHandler implements Runnable {
     public boolean isPing(DatagramPacket pkt) {
         byte[] data = pkt.getData();
         return (new String(truncate(data, 5))).compareTo("ping:") == 0;
+    }
+
+    public void printMatrix(int[][] m){
+        for (int[] is : m) {
+            for (int i : is) {
+                System.out.print(i+" ");
+            }
+            System.out.println("");
+        }
     }
 }
