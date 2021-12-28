@@ -148,6 +148,7 @@ public class Cliente {
       try {
         // receive the DP from the socket:
         RTPsocket.receive(rcvdp);
+        System.out.println("packet received");
 
         // create an RTPpacket object from the DP
         RTPpacket rtp_packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());

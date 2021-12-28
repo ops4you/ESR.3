@@ -147,12 +147,12 @@ public class ServerNetworkHandler implements Runnable {
         int updateflag = 0;
         int count = 0;// basicly the "i" for the 1st for loop
         //for (long l : this.contacts) {
-        System.out.println("matrix:");
-        printMatrix(matrix);
+        //System.out.println("matrix:");
+        //printMatrix(matrix);
         for (count = 1 ; count <this.contacts.length ; count++){
             long l = this.contacts[count];
             //timing ou
-            System.out.println("rn:" + rn +" l: " +l + "result"+ (rn-l));
+            //System.out.println("rn:" + rn +" l: " +l + "result"+ (rn-l));
 
             if (rn - l >= maxdiff) {
 
@@ -160,7 +160,7 @@ public class ServerNetworkHandler implements Runnable {
                     // only updates flag if it changes from 1 to 0
                     matrix[count][count] = 0;
                     updateflag++;
-                    System.out.println("Timmed out the router " + count);
+                    //System.out.println("Timmed out the router " + count);
                 }
                 // making available
             } else  {
