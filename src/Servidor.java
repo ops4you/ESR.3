@@ -141,6 +141,7 @@ public class Servidor extends JFrame implements ActionListener {
         
         
         for(InetAddress adrs : clients.getAdresses()){
+          System.out.println("Sending stream to :" + adrs.getHostName());
           senddp.setAddress(adrs);
           RTPsocket.send(senddp);
         }

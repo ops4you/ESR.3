@@ -93,12 +93,12 @@ public class ServerNetworkHandler implements Runnable {
             // w8 for packet
             byte[] buf = new byte[256];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            System.out.println("Listening on: " + socket.getLocalPort());
+            //System.out.println("Listening on: " + socket.getLocalPort());
             socket.receive(packet);
             // if keepalive
             // update the matrix to show that they are alive
             if (isPing(packet)) {
-                System.out.println("got a ping!");
+                //System.out.println("got a ping!");
                 String ip = packet.getAddress().getHostAddress();
                 int i = 0;
                 for (; i < ips.length; i++) {
@@ -110,8 +110,9 @@ public class ServerNetworkHandler implements Runnable {
             } else if (isRqst(packet)) {
                 System.out.println("got a request!");
                 int router = 0; // value by default as to not give an error
-                for (int i = 0; i < ips.length; i++) {
+                for (int i = 0; i < ips.length && router ==0; i++) {
                     if (packet.getAddress().equals(InetAddress.getByName(ips[i]))) {
+                        System.out.println("from router: " + i);
                         router = i;
                     }
                 }
