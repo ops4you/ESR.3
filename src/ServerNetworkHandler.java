@@ -146,25 +146,27 @@ public class ServerNetworkHandler implements Runnable {
         long rn = System.currentTimeMillis();
         int updateflag = 0;
         int count = 0;// basicly the "i" for the 1st for loop
-        for (long l : this.contacts) {
-            // timing out
+        //for (long l : this.contacts) {
+        for (count = 1 ; count <this.contacts.length ; count++){
+            long l = this.contacts[count];
+            //timing out
             if (rn - l >= maxdiff) {
 
                 if (matrix[count][count] == 1 && updateflag == 0) {
-                    // only updates flag if it changes from 1 to 2
+                    // only updates flag if it changes from 1 to 0
                     matrix[count][count] = 0;
                     updateflag++;
                     System.out.println("Timmed out the router " + count);
                 }
                 // making available
-            } else if (rn - l < maxdiff) {
+            } else  {
                 if (matrix[count][count] == 0) {
                     // only updates flag if it changes from more than 1 to one
+                    System.out.println("Made router available: "+ count);
                     updateflag++;
                     matrix[count][count] = 1;
                 }
             }
-            count++;
         }
         if (updateflag != 0) {
             System.out.println("Paths have been updated!");
