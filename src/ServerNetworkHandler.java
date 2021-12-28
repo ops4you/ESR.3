@@ -212,8 +212,12 @@ public class ServerNetworkHandler implements Runnable {
                 // route[j+1]
 
                 // j==0 so we need to update the servers own forwarding
-                if (j == 0) {
-                    clients.addAdress(ips[1]);
+                if (j == 0 && route.length >1) {
+                    clients.addAdress(ips[route[1]]);
+                }
+                //Adding the client to be served direactly from the server
+                else if( j==0 && route.length==1){
+                    clients.addAdress(clients.getClients().get(k).adress);
                 }
                 // ifi j=route.length-1 (last element in the route) insteds tells to send
                 // direcly to client
