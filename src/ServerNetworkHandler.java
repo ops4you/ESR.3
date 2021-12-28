@@ -98,7 +98,7 @@ public class ServerNetworkHandler implements Runnable {
             // if keepalive
             // update the matrix to show that they are alive
             if (isPing(packet)) {
-                System.out.print("got a ping!");
+                System.out.println("got a ping!");
                 String ip = packet.getAddress().getHostAddress();
                 int i = 0;
                 for (; i < ips.length; i++) {
@@ -108,7 +108,7 @@ public class ServerNetworkHandler implements Runnable {
                 }
                 updateAlive();
             } else if (isRqst(packet)) {
-                System.out.print("got a request!");
+                System.out.println("got a request!");
                 int router = 0; // value by default as to not give an error
                 for (int i = 0; i < ips.length; i++) {
                     if (packet.getAddress().equals(InetAddress.getByName(ips[i]))) {
@@ -146,13 +146,15 @@ public class ServerNetworkHandler implements Runnable {
         long rn = System.currentTimeMillis();
         int updateflag = 0;
         int count = 0;// basicly the "i" for the 1st for loop
+        System.out.println("contacts matrix" +this.contacts);
         //for (long l : this.contacts) {
         for (count = 1 ; count <this.contacts.length ; count++){
             long l = this.contacts[count];
-            //timing out
+            //timing ou
+            System.out.print("rn:" + rn +" l: " +l);
             if (rn - l >= maxdiff) {
 
-                if (matrix[count][count] == 1 && updateflag == 0) {
+                if (matrix[count][count] == 1) {
                     // only updates flag if it changes from 1 to 0
                     matrix[count][count] = 0;
                     updateflag++;
@@ -169,7 +171,6 @@ public class ServerNetworkHandler implements Runnable {
             }
         }
         if (updateflag != 0) {
-            System.out.println("Paths have been updated!");
             calcPath();
         }
 
