@@ -145,9 +145,9 @@ public class Servidor extends JFrame implements ActionListener {
           RTPsocket.send(senddp);
         }
         if (imagenb%10==0) {
-          System.out.println("Sent frame #" + imagenb);
+          //System.out.println("Sent frame #" + imagenb);
           // print the header bitstream
-          rtp_packet.printheader();
+          //rtp_packet.printheader();
         }
 
         // update GUI
