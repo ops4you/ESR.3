@@ -120,7 +120,8 @@ public class ServerNetworkHandler implements Runnable {
                                                                                                         // clients ip
                 ClientInfo c = new ClientInfo(a, router);
                 clients.addClient(c);
-                updateAlive();
+                if(updateAlive())
+                    {calcPath();}
             } else if (isStop(packet)) {
                 System.out.println("got a Stop!");
                 InetAddress a = InetAddress.getByName((new String(packet.getData())).split("stop:")[1]);
@@ -139,7 +140,7 @@ public class ServerNetworkHandler implements Runnable {
         }
     }
 
-    void updateAlive() throws Exception {
+    boolean updateAlive() throws Exception {
         // checks date matrix for routers that arent calling back and removes them rom
         // curretn pool,
         // if any are removed also updates matrix
@@ -175,7 +176,9 @@ public class ServerNetworkHandler implements Runnable {
         }
         if (updateflag != 0) {
             calcPath();
+            return true;
         }
+        return false;
 
     }
 
